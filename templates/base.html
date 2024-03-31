@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Create Film</p>
+    <form action="" method="post">
+        <input type="text" id="title"><br>
+        <input type="text" id="desc"><br>
+        <input type="date" id="release_date"><br>
+        <input type="file" id="poster" onchange="image_to_base64(this)"><br>
+        <input type="text" id="duration" placeholder="hh:mm:ss"><br>
+        <input type="text" id="studio"><br>
+        <input type="number" id="rating"><br>
+        <button type="submit" id="submit">Save</button>
+    </form>
+    <script src="/static/scripts/base.js"></script>
+</body>
+</html>
