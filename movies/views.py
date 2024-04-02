@@ -3,7 +3,6 @@ from rest_framework import permissions, viewsets
 from .models import Movie
 from . import serializers
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
-from datetime import timedelta, datetime
 
 
 def home_page(request):
@@ -45,17 +44,12 @@ class MovieSecondStepViewSet(viewsets.ViewSet):
     
     def create(self, request):
         film_id = request.data['pk']
-        poster = request.data['poster']
-        desc = request.data['desc']
-        duration = request.data['duration']
-        print(Movie.objects.get(pk=1).duration, type(Movie.objects.get(pk=1).duration))
         film = Movie.objects.get(pk = film_id)
-        film.poster = poster
-        film.desc = desc
-        t = datetime.strptime(duration,'%H:%M:%S')
-        film.duration = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
-        film.save()
-        return Response("File uploaded")
+        ser = serializers.MovieSecondStepSerializer(instance=film,data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response("File uploaded", 201)
+        return Response("Error", 400)
 
 # ДАУРИЯ ДОДЕЛАТЬ
 class MovieThirdStepViewSet(viewsets.ViewSet):
@@ -68,9 +62,10 @@ class MovieThirdStepViewSet(viewsets.ViewSet):
         return Response(serializers.MovieThirdStepSerializer(Movie.objects.filter(film_file=''),many=True).data)
 
     def create(self, request):
-        film_id = request.POST.get('film_id')
-        file_upload = request.FILES.get('file_field')
+        film_id = request.data['pk']
         film = Movie.objects.get(pk = film_id)
-        film.video = file_upload
-        film.save()
-        return Response("File uploaded")
+        ser = serializers.MovieSecondStepSerializer(instance=film,data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response("File uploaded", 201)
+        return Response("Error", 400)
