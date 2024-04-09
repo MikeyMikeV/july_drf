@@ -4,7 +4,6 @@ from .models import Movie
 from . import serializers
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from datetime import timedelta, datetime
-from braces.views import CsrfExemptMixin
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -31,11 +30,10 @@ class MovieViewSet(viewsets.ModelViewSet):
 
 from rest_framework.response import Response
 
-class MovieFirstStepViewSet(CsrfExemptMixin, viewsets.ViewSet):
+class MovieFirstStepViewSet(viewsets.ViewSet):
     serializer_class = serializers.MovieFirstStepSerializer
     permission_classes = [permissions.AllowAny]
     parser_classes = (JSONParser,MultiPartParser)
-    authentication_classes = []
 
     def list(self, request):
         return Response('First Step')
@@ -47,6 +45,7 @@ class MovieFirstStepViewSet(CsrfExemptMixin, viewsets.ViewSet):
         film = Movie.objects.create(title=title, release_date=release_date, studio=studio)
         film.save()
         return Response({
+            'Success':True,
             'film_id':film.pk
         })
     
@@ -72,7 +71,10 @@ class MovieSecondStepViewSet(viewsets.ViewSet):
         t = datetime.strptime(duration,'%H:%M:%S')
         film.duration = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
         film.save()
-        return Response("File uploaded")
+        return Response({
+            'Success':True,
+            'film_id':film.pk
+        })
 
 # ДАУРИЯ ДОДЕЛАТЬ
 class MovieThirdStepViewSet(viewsets.ViewSet):
@@ -88,6 +90,8 @@ class MovieThirdStepViewSet(viewsets.ViewSet):
         film_id = request.data['pk']
         file_upload = request.data['film_file']
         film = Movie.objects.get(pk = film_id)
-        film.film_file = file_upload
-        film.save()
+        print(request.FILES.get('film_file'))
+        film = serializers.MovieThirdStepSerializer(film,request.data)
+        if film.is_valid():
+            film.save()
         return Response("File uploaded")

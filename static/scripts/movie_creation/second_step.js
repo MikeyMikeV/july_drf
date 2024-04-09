@@ -14,9 +14,9 @@ function image_to_base64(input) {
     }
 }
 
-submitButton.onclick = function (params) {
+submitButton.onclick = async function (params) {
     console.log(base64_poster)
-    const url = 'http://127.0.0.1:8000/rest/second-step/'
+    const url = 'http://127.0.0.1:8000/rest/movie/create/second-step/'
     const data = {
         "pk":film_id,
         "desc":desc.value,
@@ -24,7 +24,7 @@ submitButton.onclick = function (params) {
         "duration": duration.value,
     }
 
-    const response = fetch(
+    const response = await fetch(
         url,
         {
             method: 'POST',
@@ -37,4 +37,7 @@ submitButton.onclick = function (params) {
             body: JSON.stringify(data)
         }
     )
+    rez = await response.json()
+    console.log(rez.film_id)
+    window.location.pathname = "/third/"+rez.film_id
 }

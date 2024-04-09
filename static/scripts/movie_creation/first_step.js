@@ -4,7 +4,7 @@ let studio = document.querySelector('#studio')
 let submitButton = document.querySelector('#submit')
 
 submitButton.onclick = async function (params) {
-    const url = 'http://127.0.0.1:8000/rest/first-step/'
+    const url = 'http://127.0.0.1:8000/rest/movie/create/first-step/'
     const data = {
         "title": title.value,
         "release_date": release_date.value,
